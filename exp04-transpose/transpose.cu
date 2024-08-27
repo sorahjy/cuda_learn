@@ -55,8 +55,8 @@ void launch_transpose(float* d,
 
 
 int main() {
-    const int n = 3;
-    const int m = 40;
+    const int n = 128;
+    const int m = 128;
     bool VERBOSE = false;
     float arr[n][m];
     float tran[m][n];
@@ -115,7 +115,6 @@ int main() {
     return 0;
 }
 
-// nvcc -o transpose.o  transpose.cu && ncu --set full -o ncu_profile -f ./transpose.o
 // nvcc -o transpose.o  transpose.cu && ./transpose.o
 // nvcc  transpose.cu -o transpose  -allow-unsupported-compiler
 // ncu --set full -o ncu_profile -f ./transpose.exe

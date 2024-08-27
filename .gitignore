@@ -2,4 +2,5 @@
 *.lib
 *.exe
 *.o
+*.ncu-rep
 .idea/
