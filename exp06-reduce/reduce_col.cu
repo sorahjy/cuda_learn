@@ -17,17 +17,18 @@ __device__ __forceinline__ float WarpReduceUseShuffle(float v) {
   }
 
 
-template <typename T>
-__global__ void reduce_kernel(float *d,const T *a, const int n,const int m){
+
+__global__ void reduce_kernel(float *d,const float *a, const int n,const int m){
     int n_offset = blockIdx.x * 32,
     int tx = threadIdx.x;
     int ty = threadIdx.y;
     __shared__ float buf[32][32 + 1];
     float sum = 0.0f;
     int ni =n_offset + tx;
-    if(ni < n){
-        for(int mi = ty; mi <m; mi += 32){
-            sum += a[mi * n + ni];
+    if(ni < m){
+        for(int mi = ty; mi <n; mi += 32){
+            sum += a[mi * m + ni];
+//             printf("tx=%d ty=%d v=%f\n", tx,ty,a[mi * m + ni] );
         }
     }
     buf[ty][tx]= sum;
@@ -46,14 +47,14 @@ void launch_reduce(float* d,
                  int n,
                  int m) {
     dim3 block (32,32);
-    dim3 grid(m);
+    dim3 grid((n+31)/32,(m+31)/32);
     reduce_kernel<<<grid, block>>>(d, a, n, m);
 }
 
 int main() {
-    const int n = 4;
-    const int m = 2;
-    bool VERBOSE = true;
+    const int n = 400;
+    const int m = 20;
+    bool VERBOSE = false;
     float arr[n][m];
     float gather[m];
 
